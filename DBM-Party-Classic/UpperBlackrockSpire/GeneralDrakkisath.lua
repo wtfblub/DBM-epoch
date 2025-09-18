@@ -7,8 +7,9 @@ local CONFLAGRATION_DURATION = 5
 local CONFLAGRATION_CD = 11
 local MOLTEN_ENGULFMENT_ID = 85990
 local FLAMESTRIKE_ID = 85978
+local CHARRED_GROUND_ID = 85985
 
-mod:SetRevision("20250911132619")
+mod:SetRevision("20250918224203")
 mod:SetCreatureID(BOSS_CREATURE_ID)
 mod:SetUsedIcons(1)
 
@@ -18,7 +19,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 85980",
 	"SPELL_AURA_REMOVED 85980",
 	"SPELL_CAST_START 85990 85978",
-	"UNIT_HEALTH"
+	"SPELL_PERIODIC_DAMAGE 85985",
+	"SPELL_PERIODIC_MISSED 85985"
 )
 
 local conflagrationWarn			= mod:NewTargetNoFilterAnnounce(CONFLAGRATION_ID, 2)
@@ -26,22 +28,14 @@ local conflagrationTimer		= mod:NewTargetTimer(CONFLAGRATION_DURATION, CONFLAGRA
 local conflagrationSay			= mod:NewYell(CONFLAGRATION_ID)
 local conflagrationCDTimer		= mod:NewAITimer(CONFLAGRATION_CD, CONFLAGRATION_ID, nil, nil, nil, 3)
 
-local moltenEngulfmentPreWarn	= mod:NewSoonAnnounce(MOLTEN_ENGULFMENT_ID, 2)
 local moltenEngulfmentWarn		= mod:NewSpecialWarningSpell(MOLTEN_ENGULFMENT_ID, nil, nil, nil, 2, 2)
+
+local charredGroundWarnGTFO		= mod:NewSpecialWarningGTFO(CHARRED_GROUND_ID, nil, nil, nil, 1, 8)
 
 local flamestrikeWarn			= mod:NewSpecialWarningInterrupt(FLAMESTRIKE_ID, "HasInterrupt", nil, 2, 1, 2)
 
 mod:AddSetIconOption("SetIconOnConflagration", CONFLAGRATION_ID, true, false, {1})
 
-mod.vb.prewarn_engulfment_1 = false
-mod.vb.prewarn_engulfment_2 = false
-mod.vb.prewarn_engulfment_3 = false
-
-function mod:OnCombatStart()
-	self.vb.prewarn_engulfment_1 = false
-	self.vb.prewarn_engulfment_2 = false
-	self.vb.prewarn_engulfment_3 = false
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == CONFLAGRATION_ID then
@@ -77,20 +71,11 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
-function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) ~= BOSS_CREATURE_ID then
-		return
-	end
-
-	local pct = UnitHealth(uId) / UnitHealthMax(uId)
-	if pct <= 0.78 and not self.vb.prewarn_engulfment_1 then
-		self.vb.prewarn_engulfment_1 = true
-		moltenEngulfmentPreWarn:Show()
-	elseif pct <= 0.53 and not self.vb.prewarn_engulfment_2 then
-		self.vb.prewarn_engulfment_2 = true
-		moltenEngulfmentPreWarn:Show()
-	elseif pct <= 0.28 and not self.vb.prewarn_engulfment_3 then
-		self.vb.prewarn_engulfment_3 = true
-		moltenEngulfmentPreWarn:Show()
+function mod:SPELL_PERIODIC_DAMAGE(_, _, _, destGUID, _, _, spellId, spellName)
+	if spellId == charredGroundWarnGTFO and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
+		charredGroundWarnGTFO:Show(spellName)
+		charredGroundWarnGTFO:Play("watchfeet")
 	end
 end
+
+mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

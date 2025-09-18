@@ -16,7 +16,7 @@
 ## X-DBM-Mod-Name: Dungeons (Classic)
 ## X-DBM-Mod-Sort: 1115
 ## X-DBM-Mod-MapID: 722
-## X-DBM-Mod-LoadZone: Upper Blackrock Spire
+## X-DBM-Mod-LoadZone: Blackrock Spire,Upper Blackrock Spire
 
 localization.en.lua
 
