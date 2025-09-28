@@ -71,7 +71,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, destGUID, _, _, spellId, spellName)
-	if spellId == CHARRED_GROUND_ID and destGUID == UnitGUID("player") and self:AntiSpam(3, 1) then
+	if spellId == CHARRED_GROUND_ID and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		charredGroundWarnGTFO:Show()
 		charredGroundWarnGTFO:Play("watchfeet")
 	end
