@@ -10,9 +10,9 @@ local CALL_OF_EMBERS_ID = 87659
 local MOLTEN_AGONY_ID = 87653
 local MOLTEN_AGONY_CD = 300 -- 5 minutes
 
-mod:SetRevision("20251002173439")
+mod:SetRevision("20251026212244")
 mod:SetCreatureID(46602)
-mod:SetUsedIcons(1)
+mod:SetUsedIcons(8)
 
 mod:RegisterCombat("combat")
 
@@ -37,7 +37,7 @@ local callOfEmbersWarnGTFO		= mod:NewSpecialWarningMove(CALL_OF_EMBERS_ID, nil, 
 local moltenAgonyCDTimer		= mod:NewBerserkTimer(MOLTEN_AGONY_CD)
 
 mod:AddRangeFrameOption(10, BURNING_SOUL_ID)
-mod:AddSetIconOption("SetIconOnBurningSoul", BURNING_SOUL_ID, true, false, {1})
+mod:AddSetIconOption("SetIconOnBurningSoul", BURNING_SOUL_ID, true, false, {8})
 
 function mod:OnCombatStart()
 	moltenAgonyCDTimer:Start()
@@ -47,7 +47,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == BURNING_SOUL_ID then
 		if self.Options.SetIconOnBurningSoul then
-			self:SetIcon(args.destName, 1, BURNING_SOUL_DURATION)
+			self:SetIcon(args.destName, 8, BURNING_SOUL_DURATION)
 		end
 
 		if args:IsPlayer() then
