@@ -10,7 +10,7 @@ local CALL_OF_EMBERS_ID = 87659
 local MOLTEN_AGONY_ID = 87653
 local MOLTEN_AGONY_CD = 300 -- 5 minutes
 
-mod:SetRevision("20251026212244")
+mod:SetRevision("20251103141714")
 mod:SetCreatureID(46602)
 mod:SetUsedIcons(8)
 
@@ -25,7 +25,7 @@ mod:RegisterEventsInCombat(
 )
 
 local ancientFlameWarn			= mod:NewSpecialWarningSwitch(ANCIENT_FLAME_ID, nil, nil, nil, 1, 2)
-local ancientFlameCDTimer		= mod:NewAITimer(ANCIENT_FLAME_CD, ANCIENT_FLAME_ID, nil, false, nil, 1)
+local ancientFlameCDTimer		= mod:NewCDTimer(ANCIENT_FLAME_CD, ANCIENT_FLAME_ID, nil, false, nil, 1)
 
 local burningSoulWarn			= mod:NewSpecialWarningTarget(BURNING_SOUL_ID, nil, nil, nil, 1, 2)
 local burningSoulYell			= mod:NewYell(BURNING_SOUL_ID)

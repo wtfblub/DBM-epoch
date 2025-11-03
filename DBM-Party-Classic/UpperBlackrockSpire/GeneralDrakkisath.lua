@@ -9,7 +9,7 @@ local MOLTEN_ENGULFMENT_ID = 85990
 local FLAMESTRIKE_ID = 85978
 local CHARRED_GROUND_ID = 85985
 
-mod:SetRevision("20250919120310")
+mod:SetRevision("20251103141714")
 mod:SetCreatureID(BOSS_CREATURE_ID)
 mod:SetUsedIcons(1)
 
@@ -26,7 +26,7 @@ mod:RegisterEventsInCombat(
 local conflagrationWarn			= mod:NewTargetNoFilterAnnounce(CONFLAGRATION_ID, 2)
 local conflagrationTimer		= mod:NewTargetTimer(CONFLAGRATION_DURATION, CONFLAGRATION_ID, nil, false, nil, 3)
 local conflagrationSay			= mod:NewYell(CONFLAGRATION_ID)
-local conflagrationCDTimer		= mod:NewAITimer(CONFLAGRATION_CD, CONFLAGRATION_ID, nil, nil, nil, 3)
+local conflagrationCDTimer		= mod:NewCDTimer(CONFLAGRATION_CD, CONFLAGRATION_ID, nil, nil, nil, 3)
 
 local moltenEngulfmentWarn		= mod:NewSpecialWarningSpell(MOLTEN_ENGULFMENT_ID, nil, nil, nil, 2, 2)
 
