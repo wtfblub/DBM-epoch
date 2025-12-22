@@ -12,7 +12,7 @@ local DEEP_BREATH_CAST_TIME = 4
 
 local FIREBALL_ID = 18392
 
-mod:SetRevision("20251221132522")
+mod:SetRevision("20251223004610")
 mod:SetCreatureID(45133)
 mod:RegisterCombat("combat")
 mod:SetUsedIcons(1)
@@ -41,13 +41,13 @@ mod.vb.WarnedFly2 = false
 
 mod:AddSetIconOption("SetIconOnFireball", FIREBALL_ID, true, false, {1})
 
-function mod:FireballTarget(targetname)
-	if not targetname then return end
-	fireballWarn:Show(targetname)
-	if self.Options.SetIconOnPyroblast then
-		self:SetIcon(targetname, 1, 3)
+function mod:FireballTarget(targetName)
+	if not targetName then return end
+	fireballWarn:Show(targetName)
+	if self.Options.SetIconOnFireball then
+		self:SetIcon(targetName, 1, 3)
 	end
-	if targetname == UnitName("player") then
+	if targetName == UnitName("player") then
 		fireballYell:Yell()
 	end
 end

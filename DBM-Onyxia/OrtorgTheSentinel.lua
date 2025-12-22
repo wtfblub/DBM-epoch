@@ -3,8 +3,9 @@ local L		= mod:GetLocalizedStrings()
 
 -- Guttural Shout
 local SILENCE_ID = 85598
-local SILENCE_CD = 5--30
+local SILENCE_CD = 30
 
+-- Maybe 25secs?
 local EMBER_BONDS_ID = 85596
 local EMBER_BONDS_CD = 30
 local CRIPPLING_BONDS_ID = 85595
@@ -14,11 +15,12 @@ local CRUMBLING_LAIR_ID = 85592
 local LAVA_SLASH_ID = 85600
 local LAVA_SLASH_HIGHSTACK = 2
 
+-- This is set to not log
 local OVERWHELMING_UPHEAVAL_ID = 85609
-local OVERWHELMING_UPHEAVAL_CD = 100
+local OVERWHELMING_UPHEAVAL_CD = 90
 local OVERWHELMING_UPHEAVAL_NAME = "Overwhelming Upheaval"
 
-mod:SetRevision("20251221132522")
+mod:SetRevision("20251223004610")
 mod:SetCreatureID(45136)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
 
@@ -74,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			emberBondsMove:Play("runout")
 			emberBondsYell:Yell()
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10)
+				DBM.RangeCheck:Show(10, nil, true)
 			end
 		else
 			emberBondsWarn:CombinedShow(0.3, args.destName)
@@ -106,7 +108,7 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == EMBER_BONDS_ID then
 		if args:IsPlayer() and self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
+			DBM.RangeCheck:Hide(true)
 		end
 	elseif args.spellId == CRIPPLING_BONDS_ID then
 		if not emberBondsCDTimer:IsStarted() then

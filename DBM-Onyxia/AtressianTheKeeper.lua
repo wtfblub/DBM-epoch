@@ -17,14 +17,27 @@ local COLLAPSE_LAIR_ID = 150123
 local COLLAPSE_LAIR_CAST_TIME = 30
 local DRAGONKIN_CID = 300065 -- Onyxian Magmaweaver
 
-mod:SetRevision("20251221132522")
+local DRAGONKINS_RIGHT_ID = 150049
+local DRAGONKINS_RIGHT_CAST_TIME = 5
+
+local RITUAL_FLAMES_ID = 150051
+local RITUAL_FLAMES_TIMER = 8
+
+local EXPLODE_ID = 150118
+local EXPLODE_CAST_TIME = 6
+
+local IMPLODE_ID = 150120
+local IMPLODE_CAST_TIME = 6
+
+mod:SetRevision("20251223004610")
 mod:SetCreatureID(45125)
 mod:SetUsedIcons(1)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 150038 150053 150121 150040 150123",
+	"SPELL_CAST_START 150038 150053 150121 150040 150123 150049 150118 150120",
+	"SPELL_CAST_SUCCESS 150053 150049 150118",
 	"UNIT_DIED"
 )
 
@@ -40,8 +53,59 @@ local arcaneDecimateSay			= mod:NewYell(ARCANE_DECIMATE_ID)
 local collpaseLairCastTimer		= mod:NewCastTimer(COLLAPSE_LAIR_CAST_TIME, COLLAPSE_LAIR_ID, nil, nil, nil, 2)
 local collpaseLairWarn			= mod:NewSpecialWarningSpell(COLLAPSE_LAIR_ID, nil, nil, nil, 2, 2)
 
-mod:AddSetIconOption("SetIconOnPyroblast", PYROBLAST_ID, true, false, {1})
+local dragonkinsRightWarn		= mod:NewPhaseAnnounce(3, 2, nil, nil, nil, nil, nil, 2)
+local dragonkinsRightCastTimer	= mod:NewCastTimer(DRAGONKINS_RIGHT_CAST_TIME, DRAGONKINS_RIGHT_ID, nil, nil, nil, 2)
+
+local ritualFlamesTimer			= mod:NewCastTimer(RITUAL_FLAMES_TIMER, RITUAL_FLAMES_ID, nil, nil, nil, 2)
+
+local implodeSay				= mod:NewYell(IMPLODE_ID)
+local implodeWarn				= mod:NewTargetNoFilterAnnounce(IMPLODE_ID, 2)
+local implodeCastTimer			= mod:NewCastTimer(IMPLODE_CAST_TIME, IMPLODE_ID, nil, nil, nil, 2)
+
+local explodeWarn				= mod:NewSpecialWarningSpell(EXPLODE_ID, nil, nil, nil, 2, 2)
+local explodeCastTimer			= mod:NewCastTimer(EXPLODE_CAST_TIME, EXPLODE_ID, nil, nil, nil, 2)
+
+-- mod:AddSetIconOption("SetIconOnPyroblast", PYROBLAST_ID, true, false, {1})
 mod:AddSetIconOption("SetIconOnArcaneDecimate", ARCANE_DECIMATE_ID, true, false, {1})
+mod:AddSetIconOption("SetIconOnImplode", IMPLODE_ID, true, false, {1})
+mod:AddRangeFrameOption(10, EXPLODE_ID)
+
+-- function mod:PyroblastTarget(targetName)
+-- 	if not targetName then return end
+
+-- 	if self.Options.SetIconOnPyroblast then
+-- 		self:SetIcon(targetName, 1, PYROBLAST_CAST_TIME)
+-- 	end
+-- end
+
+function mod:ArcaneDecimateTarget(targetName)
+	if not targetName then return end
+
+	if self.Options.SetIconOnArcaneDecimate then
+		self:SetIcon(targetName, 1, ARCANE_DECIMATE_CAST_TIME)
+	end
+
+	arcaneDecimateWarn:Show(targetName)
+
+	if targetName == UnitName("player") then
+		arcaneDecimateSay:Yell()
+	end
+end
+
+function mod:ImplodeTarget(targetName)
+	if not targetName then return end
+
+	if self.Options.SetIconOnImplode then
+		self:SetIcon(targetName, 1, IMPLODE_CAST_TIME)
+	end
+
+	implodeWarn:Show(targetName)
+	implodeCastTimer:Start()
+
+	if targetName == UnitName("player") then
+		implodeSay:Yell()
+	end
+end
 
 function mod:OnCombatStart()
 	manaGemsTimer:Start()
@@ -49,9 +113,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == PYROBLAST_ID then
-		if self.Options.SetIconOnPyroblast then
-			self:SetIcon(args.destName, 1, PYROBLAST_CAST_TIME)
-		end
+		-- self:BossTargetScanner(args.sourceGUID, "PyroblastTarget", 0.1, 8)
 	elseif args.spellId == DRAGONKIN_SORCERY_ID then
 		manaGemsWarn:Show()
 		manaGemsWarn:Play("mobsoon")
@@ -60,16 +122,37 @@ function mod:SPELL_CAST_START(args)
 		summonDragonkinWarn:Show()
 		summonDragonkinWarn:Play("bigmob")
 	elseif args.spellId == ARCANE_DECIMATE_ID then
-		if self.Options.SetIconOnArcaneDecimate then
-			self:SetIcon(args.destName, 1, ARCANE_DECIMATE_CAST_TIME)
-		end
-		arcaneDecimateWarn:Show(args.destName)
-		if args:IsPlayer() then
-			arcaneDecimateSay:Yell()
-		end
+		self:BossTargetScanner(args.sourceGUID, "ArcaneDecimateTarget", 0.1, 8)
 	elseif args.spellId == COLLAPSE_LAIR_ID then
 		collpaseLairCastTimer:Start()
 		collpaseLairWarn:Show()
+	elseif args.spellId == DRAGONKINS_RIGHT_ID then
+		dragonkinsRightWarn:Show()
+		dragonkinsRightWarn:Play("phasechange")
+		dragonkinsRightCastTimer:Start()
+	elseif args.spellId == IMPLODE_ID then
+		self:BossTargetScanner(args.sourceGUID, "ImplodeTarget", 0.1, 8)
+	elseif args.spellId == EXPLODE_ID then
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(10, nil, 10)
+		end
+
+		explodeWarn:Show()
+		explodeWarn:Play("aesoon")
+		explodeCastTimer:Start()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == DRAGONKIN_SORCERY_ID then
+		manaGemsTimer:Start()
+	elseif args.spellId == DRAGONKINS_RIGHT_ID then
+		ritualFlamesTimer:Start()
+		dragonkinsRightWarn:Play("runintofire")
+	elseif args.spellId == EXPLODE_ID then
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Hide(true)
+		end
 	end
 end
 
