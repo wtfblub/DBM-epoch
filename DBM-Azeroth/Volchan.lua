@@ -10,7 +10,7 @@ local CALL_OF_EMBERS_ID = 87659
 local MOLTEN_AGONY_ID = 87653
 local MOLTEN_AGONY_CD = 300 -- 5 minutes
 
-mod:SetRevision("20251103141714")
+mod:SetRevision("20251223004610")
 mod:SetCreatureID(46602)
 mod:SetUsedIcons(8)
 
@@ -56,7 +56,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			burningSoulYell:Yell()
 			burningSoulFadesYell:Countdown(args.spellId)
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10)
+				DBM.RangeCheck:Show(10, nil, true)
 			end
 		else
 			burningSoulWarn:Show(args.destName)
@@ -73,7 +73,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			burningSoulFadesYell:Cancel()
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
+				DBM.RangeCheck:Hide(true)
 			end
 		end
 	end
