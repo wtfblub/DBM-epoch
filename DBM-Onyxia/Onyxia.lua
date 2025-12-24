@@ -70,7 +70,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.YellP2 or msg:find(L.YellP2) then
+	if msg == L.YellP2_1 or msg:find(L.YellP2_1) or msg == L.YellP2_2 or msg:find(L.YellP2_2) then
 		self:SendSync("Phase2")
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		self:SendSync("Phase1")

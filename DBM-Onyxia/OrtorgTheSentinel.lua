@@ -5,7 +5,6 @@ local L		= mod:GetLocalizedStrings()
 local SILENCE_ID = 85598
 local SILENCE_CD = 30
 
--- Maybe 25secs?
 local EMBER_BONDS_ID = 85596
 local EMBER_BONDS_CD = 30
 local CRIPPLING_BONDS_ID = 85595
