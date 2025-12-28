@@ -34,7 +34,7 @@ local EXPLODE_RANGE = 6
 local IMPLODE_ID = 150120
 local IMPLODE_CAST_TIME = 6
 
-mod:SetRevision("20251227232730")
+mod:SetRevision("20251228143030")
 mod:SetCreatureID(45125)
 mod:SetUsedIcons(1)
 
@@ -171,7 +171,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == DRAGONKINS_RIGHT_ID or args.spellId == DRAGONKINS_RIGHT_ID2 then
 		ritualFlamesTimer:Start()
-		dragonkinsRightWarn:Play("runintofire")
+		-- dragonkinsRightWarn:Play("runintofire")
 	elseif args.spellId == EXPLODE_ID then
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide(true)
