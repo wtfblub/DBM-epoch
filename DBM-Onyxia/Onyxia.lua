@@ -12,7 +12,7 @@ local DEEP_BREATH_CAST_TIME = 4
 
 local FIREBALL_ID = 18392
 
-mod:SetRevision("20251229153050")
+mod:SetRevision("20251230141710")
 mod:SetCreatureID(45133)
 mod:RegisterCombat("combat")
 mod:SetUsedIcons(8)
@@ -48,6 +48,10 @@ local function IsPhaseYell(msg, phrase)
 	return msg == phrase or msg:find(phrase)
 end
 
+function mod:FireballTargetScanner(guid)
+	self:BossTargetScanner(guid, "FireballTarget", 0.2, 6)
+end
+
 function mod:FireballTarget(targetName)
 	if not targetName then return end
 
@@ -77,8 +81,8 @@ function mod:SPELL_CAST_START(args)
 		-- deepBreathCD:Start()
 	elseif args.spellId == FIREBALL_ID then
 		self:SendSync("Fireball", args.sourceGUID)
-		if self:AntiSpam(3, 1) then
-			self:BossTargetScanner(args.sourceGUID, "FireballTarget", 0.3, 6)
+		if self:AntiSpam(2, 1) then
+			self:ScheduleMethod(0.15, "FireballTargetScanner", args.sourceGUID)
 		end
 	end
 end
@@ -128,7 +132,7 @@ function mod:OnSync(msg, guid, sender)
 	elseif msg == "Phase1" then
 		groundPhaseWarn:Show()
 		-- deepBreathCD:Stop()
-	elseif msg == "Fireball" and sender and self:AntiSpam(3, 1) then
-		self:BossTargetScanner(guid, "FireballTarget", 0.3, 6)
+	elseif msg == "Fireball" and sender and self:AntiSpam(2, 1) then
+		self:ScheduleMethod(0.15, "FireballTargetScanner", guid)
 	end
 end
