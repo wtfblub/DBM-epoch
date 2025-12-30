@@ -1,12 +1,12 @@
 local L
 
 ---------------------------
---  Ortorg the Sentinel  --
+--  Ortorg the Ardent  --
 ---------------------------
-L = DBM:GetModLocalization("OrtorgTheSentinel")
+L = DBM:GetModLocalization("OrtorgTheArdent")
 
 L:SetGeneralLocalization({
-	name = "Ortorg the Sentinel"
+	name = "Ortorg the Ardent"
 })
 
 L:SetMiscLocalization({

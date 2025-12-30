@@ -1,4 +1,4 @@
-local mod	= DBM:NewMod("OrtorgTheSentinel", "DBM-Onyxia")
+local mod	= DBM:NewMod("OrtorgTheArdent", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
 -- Guttural Shout

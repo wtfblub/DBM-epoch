@@ -15,6 +15,6 @@
 
 localization.en.lua
 
-OrtorgTheSentinel.lua
+OrtorgTheArdent.lua
 AtressianTheKeeper.lua
 Onyxia.lua
