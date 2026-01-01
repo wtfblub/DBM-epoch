@@ -22,7 +22,7 @@ local OVERWHELMING_UPHEAVAL_CD2 = 105
 local P2_MOLTEN_UPHEAVAL_ID = 85603
 local P2_MOLTEN_UPHEAVAL_CAST_TIME = 3.5
 
-mod:SetRevision("20251229153050")
+mod:SetRevision("20260101123050")
 mod:SetCreatureID(45136)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
 
@@ -52,7 +52,8 @@ local crumblingLairWarnGTFO = mod:NewSpecialWarningMove(CRUMBLING_LAIR_ID, nil, 
 local lavaSlashWarnStack		= mod:NewStackAnnounce(LAVA_SLASH_ID, 2, nil, "Tank|Healer")
 local lavaSlashWarnHighStack	= mod:NewSpecialWarningStack(LAVA_SLASH_ID, nil, LAVA_SLASH_HIGHSTACK, nil, nil, 1, 6)
 
-local overwhelmingUpheavalCDTimer = mod:NewCDTimer(OVERWHELMING_UPHEAVAL_CD, OVERWHELMING_UPHEAVAL_ID, nil, nil, nil, 2)
+local overwhelmingUpheavalCDTimer	= mod:NewCDTimer(OVERWHELMING_UPHEAVAL_CD, OVERWHELMING_UPHEAVAL_ID, nil, nil, nil, 2)
+local phase2Counter					= mod:NewCountAnnounce(P2_MOLTEN_UPHEAVAL_ID, 2)
 
 local phase1Warn = mod:NewPhaseAnnounce(1)
 local phase2Warn = mod:NewPhaseAnnounce(2)
@@ -158,6 +159,7 @@ function mod:SPELL_CAST_START(args)
 		silenceCDTimer:Stop()
 	elseif args.spellId == P2_MOLTEN_UPHEAVAL_ID then
 		self.vb.P2Counter = self.vb.P2Counter + 1
+		phase2Counter:Show(self.vb.P2Counter)
 		if self.vb.P2Counter >= 10 then
 			self:ScheduleMethod(P2_MOLTEN_UPHEAVAL_CAST_TIME, "AnnouncePhase1")
 		end
