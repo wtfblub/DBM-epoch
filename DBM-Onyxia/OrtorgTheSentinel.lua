@@ -22,7 +22,7 @@ local OVERWHELMING_UPHEAVAL_CD2 = 100
 local P2_MOLTEN_UPHEAVAL_ID = 85603
 local P2_MOLTEN_UPHEAVAL_CAST_TIME = 3.5
 
-mod:SetRevision("20260101134005")
+mod:SetRevision("20260103175316")
 mod:SetCreatureID(45136)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
 
@@ -175,6 +175,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		phase2Warn:Show()
 		silenceCDTimer:Stop()
 		emberBondsCDTimer:Stop()
+		overwhelmingUpheavalCDTimer:Stop()
 		self.vb.P2Counter = 0
 	end
 end
