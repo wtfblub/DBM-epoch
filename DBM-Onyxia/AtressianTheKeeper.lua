@@ -4,6 +4,8 @@ local L		= mod:GetLocalizedStrings()
 -- local PYROBLAST_ID = 150038
 -- local PYROBLAST_CAST_TIME = 6
 
+local SUMMON_DRAGONFIRE_ID = 150041
+
 local DRAGONKIN_SORCERY_ID = 150053
 local DRAGONKIN_SORCERY_WITH_DESC_ID = 150054
 local DRAGONKIN_SORCERY_CD = 90
@@ -42,7 +44,7 @@ local IMPLODE_CAST_TIME = 6
 local IMPLODE_EXPLODE_CD = 25
 local IMPLODE_EXPLODE_CD2 = 60
 
-mod:SetRevision("20260103175316")
+mod:SetRevision("20260105133222")
 mod:SetCreatureID(45125)
 mod:SetUsedIcons(6, 8)
 
@@ -51,10 +53,13 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 150053 150121 150040 150123 150063 150049 150118 150120",
 	"SPELL_CAST_SUCCESS 150126 150127",
+	"SPELL_SUMMON 150041",
 	-- "SPELL_AURA_REMOVED 150144",
 	"UNIT_HEALTH",
 	"UNIT_DIED"
 )
+
+local summonDragonfireWarn		= mod:NewSpecialWarningSwitch(SUMMON_DRAGONFIRE_ID, nil, nil, nil, 1, 2)
 
 local manaGemsWarn				= mod:NewSpecialWarningSwitch(DRAGONKIN_SORCERY_WITH_DESC_ID, nil, nil, nil, 1, 2)
 local manaGemsTimer				= mod:NewCDTimer(DRAGONKIN_SORCERY_CD, DRAGONKIN_SORCERY_WITH_DESC_ID, nil, nil, nil, 1)
@@ -185,6 +190,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 		summonDragonkinWarn:Play("bigmob")
 	elseif args.spellId == IMPLODE_OR_EXPLODE_ID then
 		implodeExplodeTimer:Start(IMPLODE_EXPLODE_CD2)
+	end
+end
+
+function mod:SPELL_SUMMON(args)
+	if args.spellId == SUMMON_DRAGONFIRE_ID then
+		summonDragonfireWarn:Show()
+		summonDragonfireWarn:Play("killmob")
 	end
 end
 
