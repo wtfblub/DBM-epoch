@@ -44,7 +44,7 @@ local IMPLODE_CAST_TIME = 6
 local IMPLODE_EXPLODE_CD = 25
 local IMPLODE_EXPLODE_CD2 = 60
 
-mod:SetRevision("20260105133222")
+mod:SetRevision("20260107170028")
 mod:SetCreatureID(45125)
 mod:SetUsedIcons(6, 8)
 
@@ -196,17 +196,8 @@ end
 function mod:SPELL_SUMMON(args)
 	if args.spellId == SUMMON_DRAGONFIRE_ID then
 		summonDragonfireWarn:Show()
-		summonDragonfireWarn:Play("killmob")
 	end
 end
-
--- function mod:SPELL_AURA_REMOVED(args)
--- 	if args.spellId == EXPLODE_DEBUFF_ID then
--- 		if args:IsPlayer() and self.Options.RangeFrame then
--- 			DBM.RangeCheck:Hide(true)
--- 		end
--- 	end
--- end
 
 function mod:UNIT_HEALTH(uId)
 	local cid = self:GetUnitCreatureId(uId)
