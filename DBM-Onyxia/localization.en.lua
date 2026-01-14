@@ -6,7 +6,7 @@ local L
 L = DBM:GetModLocalization("OrtorgTheSentinel")
 
 L:SetGeneralLocalization({
-	name = "Ortorg the Sentinel"
+	name = "Ortorg the Ardent"
 })
 
 L:SetMiscLocalization({

@@ -12,7 +12,7 @@ local CRIPPLING_BONDS_ID = 85595
 local CRUMBLING_LAIR_ID = 85592
 
 local LAVA_SLASH_ID = 85600
-local LAVA_SLASH_CD = 23
+local LAVA_SLASH_CD = 22
 local LAVA_SLASH_PULL_CD = 15
 local LAVA_SLASH_P2_CD = 12
 local LAVA_SLASH_HIGHSTACK = 2
@@ -37,7 +37,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED 85596 85595",
 	"SPELL_PERIODIC_DAMAGE 85592",
 	"SPELL_PERIODIC_MISSED 85592",
-	"SPELL_CAST_START 85598 85603",
+	"SPELL_CAST_START 85598 85603 85600",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -110,7 +110,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			cripplingBondsFadesYell:Countdown(args.spellId)
 		end
 	elseif args.spellId == LAVA_SLASH_ID then
-		lavaSlashCD:Start()
 		local amount = args.amount or 1
 		if amount >= LAVA_SLASH_HIGHSTACK then
 			if args:IsPlayer() then
@@ -170,6 +169,8 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.P2Counter >= 10 then
 			self:ScheduleMethod(P2_MOLTEN_UPHEAVAL_CAST_TIME, "AnnouncePhase1")
 		end
+	elseif args.spellId == LAVA_SLASH_ID then
+		lavaSlashCD:Start()
 	end
 end
 
@@ -183,6 +184,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		silenceCDTimer:Stop()
 		emberBondsCDTimer:Stop()
 		overwhelmingUpheavalCDTimer:Stop()
+		lavaSlashCD:Stop()
 		self.vb.P2Counter = 0
 	end
 end
