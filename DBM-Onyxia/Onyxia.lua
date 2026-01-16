@@ -68,6 +68,11 @@ end
 
 function mod:OnCombatStart()
 	flameBreathCD:Start()
+	self:SetStage(1)
+	self.vb.WarnedFly1 = false
+	self.vb.WarnedFly2 = false
+	self.vb.WarnedLand1 = false
+	self.vb.WarnedLand2 = false
 end
 
 function mod:SPELL_CAST_START(args)
@@ -102,34 +107,62 @@ function mod:UNIT_HEALTH(uId)
 	end
 
 	if not self.vb.WarnedFly1 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.86 then
-		self.vb.WarnedFly1 = true
-		flyPhasePreWarn:Show()
+		self:SendSync("PrePhase2")
 	end
 
 	if not self.vb.WarnedFly2 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.46 then
-		self.vb.WarnedFly2 = true
-		flyPhasePreWarn:Show()
+		self:SendSync("PrePhase2_2")
 	end
 
 	if not self.vb.WarnedLand1 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.65 then
-		self.vb.WarnedLand1 = true
-		groundPhasePreWarn:Show()
+		self:SendSync("PrePhase1")
 	end
 
 	if not self.vb.WarnedLand2 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.25 then
-		self.vb.WarnedLand2 = true
-		groundPhasePreWarn:Show()
+		self:SendSync("PrePhase1_2")
 	end
 end
 
 function mod:OnSync(msg, guid, sender)
 	if not self:IsInCombat() then return end
 
-	if msg == "Phase2" then
+	if msg == "PrePhase2" then
+		if not self.vb.WarnedFly1 then
+			self.vb.WarnedFly1 = true
+			flyPhasePreWarn:Show()
+		end
+	elseif msg == "PrePhase2_2" then
+		if not self.vb.WarnedFly2 then
+			self.vb.WarnedFly2 = true
+			flyPhasePreWarn:Show()
+		end
+	elseif msg == "PrePhase1" then
+		if not self.vb.WarnedLand1 then
+			self.vb.WarnedLand1 = true
+			groundPhasePreWarn:Show()
+		end
+	elseif msg == "PrePhase1_2" then
+		if not self.vb.WarnedLand2 then
+			self.vb.WarnedLand2 = true
+			groundPhasePreWarn:Show()
+		end
+	elseif msg == "Phase2" then
+		self:SetStage(2)
+		if not self.vb.WarnedFly1 then
+			self.vb.WarnedFly1 = true
+		elseif not self.vb.WarnedFly2 then
+			self.vb.WarnedFly2 = true
+		end
 		flyPhaseWarn:Show()
 		flameBreathCD:Stop()
 		-- deepBreathCD:Start()
 	elseif msg == "Phase1" then
+		self:SetStage(1)
+		if not self.vb.WarnedLand1 then
+			self.vb.WarnedLand1 = true
+		elseif not self.vb.WarnedLand2 then
+			self.vb.WarnedLand2 = true
+		end
 		groundPhaseWarn:Show()
 		-- deepBreathCD:Stop()
 	elseif msg == "Fireball" and sender and self:AntiSpam(2, 1) then
